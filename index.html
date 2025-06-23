@@ -254,15 +254,15 @@
                     datasets: [{
                         label: '他画像',
                         data: otherScores2,
-                        backgroundColor: 'rgba(255, 192, 203, 0.5)',
+                        backgroundColor: 'rgba(255, 192, 203, 0.4)',
                         borderColor: 'rgba(179, 45, 45, 1)',
-                        borderWidth: 3
+                        borderWidth: 2
                     }, {
                         label: '自画像',
                         data: selfScores2,
-                        backgroundColor: 'rgba(173, 216, 230, 0.5)',
+                        backgroundColor: 'rgba(173, 216, 230, 0.4)',
                         borderColor: 'rgba(85, 156, 185, 1) ',
-                        borderWidth: 3
+                        borderWidth: 2
                     }]
                 },
 
@@ -388,16 +388,22 @@
                 sublabel_otherscore.push({"指标":sublabels[i],"分数":otherScores[i]});
             }
             sublabel_otherscore.sort((a, b) => b['分数'] - a['分数']);
-            let ad1 = ""
-            let ds1 = ""
+
+            const ad1_items = [];
             for(let i = 0; i < 5; i++){
-                ad1 += (i+1)+"."+sublabel_otherscore[i]["指标"];
-                ds1 += (i+1)+"."+sublabel_otherscore[26-i]["指标"];
-                if(i==0||i==2||i==3){ ad1 += "&nbsp;&nbsp;"; ds1 += "&nbsp;&nbsp;"}
-                else if(i==1){ad1 += "<br>"; ds1 += "<br>"}
+                ad1_items.push((i+1) + "." + sublabel_otherscore[i]["指标"]);
             }
-            advantage1.innerHTML = ad1
-            disadvantage1.innerHTML = ds1
+            advantage1.style.flexDirection = 'column';
+            advantage1.style.gap = '8px';
+            advantage1.innerHTML = `<div>${ad1_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ad1_items.slice(2, 5).join('&nbsp;&nbsp;&nbsp;')}</div>`;
+
+            const ds1_items = [];
+            for(let i = 0; i < 5; i++){
+                ds1_items.push((i+1) + "." + sublabel_otherscore[26-i]["指标"]);
+            }
+            disadvantage1.style.flexDirection = 'column';
+            disadvantage1.style.gap = '8px';
+            disadvantage1.innerHTML = `<div>${ds1_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ds1_items.slice(2, 5).join('&nbsp;&nbsp;&nbsp;')}</div>`;
         }
         
         function createChart2(data, data2) {
@@ -483,21 +489,14 @@
             console.log(data2_);
             let highlight = [];
             let blind = [];
-            let ad2 = ""
-            let ds2 = ""
+            let ad2_items = [];
+            let ds2_items = [];
 
             for(let i = 0; i < 4; i++){
                 highlight.push((i+1)+".<span style='font-weight: 800;'>"+data[i]["维度"]+"</span>："+data2_[data[i]["维度"]]["高分表现"]);
                 blind.push((i+1)+".<span style='font-weight: 800;'>"+data[19-i]["维度"]+"</span>："+data2_[data[19-i]["维度"]]["低分表现"]);
-                ad2 += (i+1)+"."+data[i]["维度"];
-                ds2 += (i+1)+"."+data[19-i]["维度"];
-                if(i === 1) {
-                    ad2 += "<br>";
-                    ds2 += "<br>";
-                } else if (i === 0 || i === 2) {
-                    ad2 += "&nbsp;&nbsp;";
-                    ds2 += "&nbsp;&nbsp;";
-                }
+                ad2_items.push((i+1)+"."+data[i]["维度"]);
+                ds2_items.push((i+1)+"."+data[19-i]["维度"]);
             }
 
             const highlightDiv = document.getElementById("highlight");
@@ -506,8 +505,14 @@
             blindDiv.innerHTML = blind.join("<br>");
             const advantage2 = document.getElementById("advantage2");
             const disadvantage2 = document.getElementById("disadvantage2");
-            advantage2.innerHTML = ad2;
-            disadvantage2.innerHTML = ds2;
+            
+            advantage2.style.flexDirection = 'column';
+            advantage2.style.gap = '8px';
+            advantage2.innerHTML = `<div>${ad2_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ad2_items.slice(2, 4).join('&nbsp;&nbsp;&nbsp;')}</div>`;
+
+            disadvantage2.style.flexDirection = 'column';
+            disadvantage2.style.gap = '8px';
+            disadvantage2.innerHTML = `<div>${ds2_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ds2_items.slice(2, 4).join('&nbsp;&nbsp;&nbsp;')}</div>`;
         }
 
         function saveFullPage() {
