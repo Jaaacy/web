@@ -516,6 +516,10 @@
         }
 
         function saveFullPage() {
+            // 获取图表canvas的图像数据
+            const chartCanvas = document.getElementById('myChart');
+            const chartImage = chartCanvas.toDataURL('image/png', 1.0);
+
             // 获取要保存的容器
             const container = document.querySelector('.container');
             // 配置 html2canvas 选项
@@ -528,6 +532,16 @@
                 height: container.scrollHeight, // 使用实际高度
                 windowHeight: container.scrollHeight,
                 onclone: function(clonedDoc) {
+                    // 在克隆的文档中，用图表的图像替换canvas元素
+                    const clonedChartCanvas = clonedDoc.getElementById('myChart');
+                    if (clonedChartCanvas) {
+                        const img = new Image();
+                        img.src = chartImage;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        clonedChartCanvas.parentNode.replaceChild(img, clonedChartCanvas);
+                    }
+
                     const clonedContainer = clonedDoc.querySelector('.container');
                     if (clonedContainer) {
                         clonedContainer.style.height = 'auto';
