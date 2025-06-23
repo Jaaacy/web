@@ -388,22 +388,16 @@
                 sublabel_otherscore.push({"指标":sublabels[i],"分数":otherScores[i]});
             }
             sublabel_otherscore.sort((a, b) => b['分数'] - a['分数']);
-
-            const ad1_items = [];
+            let ad1 = ""
+            let ds1 = ""
             for(let i = 0; i < 5; i++){
-                ad1_items.push((i+1) + "." + sublabel_otherscore[i]["指标"]);
+                ad1 += (i+1)+"."+sublabel_otherscore[i]["指标"];
+                ds1 += (i+1)+"."+sublabel_otherscore[26-i]["指标"];
+                if(i==0||i==2||i==3){ ad1 += "&nbsp;&nbsp;"; ds1 += "&nbsp;&nbsp;"}
+                else if(i==1){ad1 += "<br>"; ds1 += "<br>"}
             }
-            advantage1.style.flexDirection = 'column';
-            advantage1.style.gap = '8px';
-            advantage1.innerHTML = `<div>${ad1_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ad1_items.slice(2, 5).join('&nbsp;&nbsp;&nbsp;')}</div>`;
-
-            const ds1_items = [];
-            for(let i = 0; i < 5; i++){
-                ds1_items.push((i+1) + "." + sublabel_otherscore[26-i]["指标"]);
-            }
-            disadvantage1.style.flexDirection = 'column';
-            disadvantage1.style.gap = '8px';
-            disadvantage1.innerHTML = `<div>${ds1_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ds1_items.slice(2, 5).join('&nbsp;&nbsp;&nbsp;')}</div>`;
+            advantage1.innerHTML = ad1
+            disadvantage1.innerHTML = ds1
         }
         
         function createChart2(data, data2) {
@@ -489,14 +483,21 @@
             console.log(data2_);
             let highlight = [];
             let blind = [];
-            let ad2_items = [];
-            let ds2_items = [];
+            let ad2 = ""
+            let ds2 = ""
 
             for(let i = 0; i < 4; i++){
                 highlight.push((i+1)+".<span style='font-weight: 800;'>"+data[i]["维度"]+"</span>："+data2_[data[i]["维度"]]["高分表现"]);
                 blind.push((i+1)+".<span style='font-weight: 800;'>"+data[19-i]["维度"]+"</span>："+data2_[data[19-i]["维度"]]["低分表现"]);
-                ad2_items.push((i+1)+"."+data[i]["维度"]);
-                ds2_items.push((i+1)+"."+data[19-i]["维度"]);
+                ad2 += (i+1)+"."+data[i]["维度"];
+                ds2 += (i+1)+"."+data[19-i]["维度"];
+                if(i === 1) {
+                    ad2 += "<br>";
+                    ds2 += "<br>";
+                } else if (i === 0 || i === 2) {
+                    ad2 += "&nbsp;&nbsp;";
+                    ds2 += "&nbsp;&nbsp;";
+                }
             }
 
             const highlightDiv = document.getElementById("highlight");
@@ -505,21 +506,11 @@
             blindDiv.innerHTML = blind.join("<br>");
             const advantage2 = document.getElementById("advantage2");
             const disadvantage2 = document.getElementById("disadvantage2");
-            
-            advantage2.style.flexDirection = 'column';
-            advantage2.style.gap = '8px';
-            advantage2.innerHTML = `<div>${ad2_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ad2_items.slice(2, 4).join('&nbsp;&nbsp;&nbsp;')}</div>`;
-
-            disadvantage2.style.flexDirection = 'column';
-            disadvantage2.style.gap = '8px';
-            disadvantage2.innerHTML = `<div>${ds2_items.slice(0, 2).join('&nbsp;&nbsp;&nbsp;')}</div><div>${ds2_items.slice(2, 4).join('&nbsp;&nbsp;&nbsp;')}</div>`;
+            advantage2.innerHTML = ad2;
+            disadvantage2.innerHTML = ds2;
         }
 
         function saveFullPage() {
-            // 获取图表canvas的图像数据
-            const chartCanvas = document.getElementById('myChart');
-            const chartImage = chartCanvas.toDataURL('image/png', 1.0);
-
             // 获取要保存的容器
             const container = document.querySelector('.container');
             // 配置 html2canvas 选项
@@ -532,16 +523,6 @@
                 height: container.scrollHeight, // 使用实际高度
                 windowHeight: container.scrollHeight,
                 onclone: function(clonedDoc) {
-                    // 在克隆的文档中，用图表的图像替换canvas元素
-                    const clonedChartCanvas = clonedDoc.getElementById('myChart');
-                    if (clonedChartCanvas) {
-                        const img = new Image();
-                        img.src = chartImage;
-                        img.style.width = '100%';
-                        img.style.height = '100%';
-                        clonedChartCanvas.parentNode.replaceChild(img, clonedChartCanvas);
-                    }
-
                     const clonedContainer = clonedDoc.querySelector('.container');
                     if (clonedContainer) {
                         clonedContainer.style.height = 'auto';
